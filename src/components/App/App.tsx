@@ -5,17 +5,21 @@ import VoteStats from '../VoteStats/VoteStats';
 import Notification from '../Notification/Notification';
 import css from './App.module.css';
 
-import { initialVotes } from '../../types/votes';
 import type { Votes, VoteType } from '../../types/votes';
+
+// локально определяем начальное состояние голосов
+const initialVotes: Votes = {
+  good: 0,
+  neutral: 0,
+  bad: 0,
+};
 
 export default function App() {
   const [votes, setVotes] = useState<Votes>(initialVotes);
 
-  // додаємо голос`
   const handleVote = (type: VoteType) =>
     setVotes(prev => ({ ...prev, [type]: prev[type] + 1 }));
 
-  // скидання
   const resetVotes = () => setVotes(initialVotes);
 
   const total = votes.good + votes.neutral + votes.bad;
@@ -26,16 +30,19 @@ export default function App() {
       <CafeInfo />
 
       <VoteOptions
-        options={['good', 'neutral', 'bad']}
         onVote={handleVote}
         onReset={resetVotes}
         canReset={total > 0}
       />
 
       {total > 0 ? (
-        <VoteStats votes={votes} totalVotes={total} positiveRate={positive} />
+        <VoteStats
+          votes={votes}
+          totalVotes={total}
+          positiveRate={positive}
+        />
       ) : (
-        <Notification message="No feedback yet" />
+        <Notification />
       )}
     </div>
   );
